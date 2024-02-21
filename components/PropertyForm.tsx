@@ -15,7 +15,7 @@ const PropertyForm: React.FC = () => {
     const fetchProperties = async () => {
       const querySnapshot = await getDocs(collection(db, "properties"));
       const data = querySnapshot.docs.map((doc) => doc.data());
-      setProperties(data);
+      setProperties(data as Document[]); // Update the type of properties state
     };
 
     fetchProperties();
