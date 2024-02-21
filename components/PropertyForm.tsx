@@ -36,6 +36,10 @@ const PropertyForm: React.FC = () => {
       setName("");
       setType("");
       setCity("");
+      // Fetch the latest documents from the 'properties' collection
+      const querySnapshot = await getDocs(collection(db, 'properties'));
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setProperties(data);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
