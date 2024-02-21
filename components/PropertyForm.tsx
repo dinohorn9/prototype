@@ -8,6 +8,16 @@ interface Document {
   name: string;
   type: string;
   city: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  url: string;
+  address: string;
+  address2: string;
+  state: string;
+  zip: string;
+  country: string;
   // add other fields as necessary
 }
 
@@ -15,9 +25,20 @@ const PropertyForm: React.FC = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [city, setCity] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [url, setUrl] = useState('');
+  const [address, setAddress] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [country, setCountry] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterCity, setFilterCity] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Add isLoading state
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [properties, setProperties] = useState<Document[]>([]); // Update the type of properties state
   // Get unique types and cities
@@ -44,6 +65,11 @@ const PropertyForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!firstName || !lastName || !email || !phone || !url || !address || !state || !zip || !country) {
+      setErrorMessage('All fields except Address 2 are required.');
+      return;
+    }
+
     setIsLoading(true); // Set isLoading to true
 
     try {
@@ -51,11 +77,31 @@ const PropertyForm: React.FC = () => {
         name,
         type,
         city,
+        firstName,
+        lastName,
+        email,
+        phone,
+        url,
+        address,
+        address2,
+        state,
+        zip,
+        country,
       });
 
       setName("");
       setType("");
       setCity("");
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPhone('');
+      setUrl('');
+      setAddress('');
+      setAddress2('');
+      setState('');
+      setZip('');
+      setCountry('');
       // Fetch the latest documents from the 'properties' collection
       const querySnapshot = await getDocs(collection(db, 'properties'));
       const data = querySnapshot.docs.map((doc) => doc.data()) as Document[];
@@ -71,6 +117,16 @@ const PropertyForm: React.FC = () => {
     setName("");
     setType("");
     setCity("");
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPhone('');
+    setUrl('');
+    setAddress('');
+    setAddress2('');
+    setState('');
+    setZip('');
+    setCountry('');
   };
 
   return (
@@ -92,11 +148,82 @@ const PropertyForm: React.FC = () => {
         />
         <input
           type="text"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          placeholder="First Name"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          placeholder="Last Name"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Phone"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="URL"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Address"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
+          value={address2}
+          onChange={(e) => setAddress2(e.target.value)}
+          placeholder="Address 2"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
           placeholder="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
           className="mb-4 p-2 border border-gray-300 text-black"
         />
+        <input
+          type="text"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          placeholder="State"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
+          value={zip}
+          onChange={(e) => setZip(e.target.value)}
+          placeholder="Zip"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+        <input
+          type="text"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          placeholder="Country"
+          className="mb-4 p-2 border border-gray-300 text-black"
+        />
+
         <div className="flex justify-between">
           <button type="submit" className="p-2 bg-blue-500 text-white">
             {isLoading ? (
@@ -133,6 +260,7 @@ const PropertyForm: React.FC = () => {
           </button>
         </div>
       </form>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <div className="flex space-x-4 mb-4 mt-10">
         <select
           value={filterType}
@@ -159,7 +287,7 @@ const PropertyForm: React.FC = () => {
           ))}
         </select>
       </div>
-      <div className="mt-8">
+      <div className="mt-8 overflow-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -169,9 +297,20 @@ const PropertyForm: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Type
               </th>
+
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>URL</th>
+              <th>Address</th>
+              <th>Address 2</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 City
               </th>
+              <th>State</th>
+              <th>Zip</th>
+              <th>Country</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -185,9 +324,20 @@ const PropertyForm: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{property.type}</div>
                   </td>
+
+                  <td className="text-sm text-gray-900">{property.firstName}</td>
+                  <td className="text-sm text-gray-900">{property.lastName}</td>
+                  <td className="text-sm text-gray-900">{property.email}</td>
+                  <td className="text-sm text-gray-900">{property.phone}</td>
+                  <td className="text-sm text-gray-900">{property.url}</td>
+                  <td className="text-sm text-gray-900">{property.address}</td>
+                  <td className="text-sm text-gray-900">{property.address2}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{property.city}</div>
                   </td>
+                  <td className="text-sm text-gray-900">{property.state}</td>
+                  <td className="text-sm text-gray-900">{property.zip}</td>
+                  <td className="text-sm text-gray-900">{property.country}</td>
                 </tr>
               ))}
           </tbody>
