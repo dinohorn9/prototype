@@ -126,11 +126,11 @@ const PropertyForm: React.FC = () => {
           </button>
         </div>
       </form>
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-4 mb-4 mt-10">
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="form-select block w-full mt-1"
+          className="form-select block w-full mt-1 text-black"
         >
           <option value="">Filter by type</option>
           {types.map((type) => (
@@ -142,7 +142,7 @@ const PropertyForm: React.FC = () => {
         <select
           value={filterCity}
           onChange={(e) => setFilterCity(e.target.value)}
-          className="form-select block w-full mt-1"
+          className="form-select block w-full mt-1 text-black"
         >
           <option value="">Filter by city</option>
           {cities.map((city) => (
