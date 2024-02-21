@@ -2,14 +2,27 @@
 import React, { useState, useEffect } from "react";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { unique } from "../lib/utils";
 
 const PropertyForm: React.FC = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [city, setCity] = useState("");
+  const [filterType, setFilterType] = useState('');
+  const [filterCity, setFilterCity] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Add isLoading state
 
   const [properties, setProperties] = useState<Document[]>([]); // Update the type of properties state
+  // Get unique types and cities
+  const types = unique(properties.map((property) => property.type));
+  const cities = unique(properties.map((property) => property.city));
+  // Filter properties based on selected type and city
+  const filteredProperties = properties.filter((property: Document & { city: string, type: string }) => {
+    return (
+      (filterType ? property.type === filterType : true) &&
+      (filterCity ? property.city === filterCity : true)
+    );
+  });
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -113,6 +126,32 @@ const PropertyForm: React.FC = () => {
           </button>
         </div>
       </form>
+      <div className="flex space-x-4 mb-4">
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="form-select block w-full mt-1"
+        >
+          <option value="">Filter by type</option>
+          {types.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filterCity}
+          onChange={(e) => setFilterCity(e.target.value)}
+          className="form-select block w-full mt-1"
+        >
+          <option value="">Filter by city</option>
+          {cities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="mt-8">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -129,7 +168,7 @@ const PropertyForm: React.FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {properties
+            {filteredProperties
               .sort((a: any, b: any) => a.name.localeCompare(b.name))
               .map((property: any) => (
                 <tr key={property.id}>
