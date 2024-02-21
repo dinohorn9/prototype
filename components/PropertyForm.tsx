@@ -4,6 +4,13 @@ import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { unique } from "../lib/utils";
 
+interface Document {
+  name: string;
+  type: string;
+  city: string;
+  // add other fields as necessary
+}
+
 const PropertyForm: React.FC = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
