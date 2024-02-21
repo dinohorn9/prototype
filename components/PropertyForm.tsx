@@ -9,7 +9,7 @@ const PropertyForm: React.FC = () => {
   const [city, setCity] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Add isLoading state
 
-  const [properties, setProperties] = useState<DocumentData[]>([]); // Update the type of properties state
+  const [properties, setProperties] = useState<Document[]>([]); // Update the type of properties state
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -109,14 +109,39 @@ const PropertyForm: React.FC = () => {
           </button>
         </div>
       </form>
-      <div>
-        {properties.map((property: any) => (
-          <div key={property.id}>
-            <h3>{property.name}</h3>
-            <p>Type: {property.type}</p>
-            <p>City: {property.city}</p>
-          </div>
-        ))}
+      <div className="mt-8">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                City
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {properties
+              .sort((a: any, b: any) => a.name.localeCompare(b.name))
+              .map((property: any) => (
+                <tr key={property.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{property.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{property.type}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{property.city}</div>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
