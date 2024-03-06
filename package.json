@@ -10,15 +10,26 @@
   },
   "dependencies": {
     "@firebase/firestore": "^4.4.2",
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@googlemaps/js-api-loader": "^1.16.6",
+    "@googlemaps/react-wrapper": "^1.1.35",
+    "@react-google-maps/api": "^2.19.3",
     "firebase": "^10.8.0",
-    "next": "14.1.0",
+    "google-map-react": "^2.2.1",
+    "haversine-js": "^1.0.0",
+    "next": "latest",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-google-places-autocomplete": "^4.0.1",
+    "react-input-mask": "^2.0.4",
+    "react-places-autocomplete": "^7.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-input-mask": "^3.0.5",
+    "@types/react-places-autocomplete": "^7.2.14",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",

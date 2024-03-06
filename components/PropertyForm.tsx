@@ -4,7 +4,11 @@ import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { unique } from "../lib/utils";
 
+/**
+ * Represents a document with various properties.
+ */
 interface Document {
+  id: string;
   name: string;
   type: string;
   city: string;
@@ -20,6 +24,11 @@ interface Document {
   country: string;
   // add other fields as necessary
 }
+
+/**
+ * Represents a form component for managing properties.
+ * @component
+ */
 
 const PropertyForm: React.FC = () => {
   const [name, setName] = useState("");
@@ -37,15 +46,15 @@ const PropertyForm: React.FC = () => {
   const [country, setCountry] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterCity, setFilterCity] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [properties, setProperties] = useState<Document[]>([]); // Update the type of properties state
+  const [properties, setProperties] = useState<Document[]>([]);
   // Get unique types and cities
   const types = unique(properties.map((property) => property.type));
   const cities = unique(properties.map((property) => property.city));
   // Filter properties based on selected type and city
-  const filteredProperties = properties.filter((property: Document & { city: string, type: string }) => {
+  const filteredProperties = properties.filter((property: Document) => {
     return (
       (filterType ? property.type === filterType : true) &&
       (filterCity ? property.city === filterCity : true)
@@ -55,22 +64,69 @@ const PropertyForm: React.FC = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       const querySnapshot = await getDocs(collection(db, "properties"));
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setProperties(data as Document[]); // Update the type of properties state
+      const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setProperties(data as Document[]);
     };
 
     fetchProperties();
   }, []);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "name":
+        setName(value);
+        break;
+      case "type":
+        setType(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "lastName":
+        setLastName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "phone":
+        setPhone(value);
+        break;
+      case "url":
+        setUrl(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "address2":
+        setAddress2(value);
+        break;
+      case "state":
+        setState(value);
+        break;
+      case "zip":
+        setZip(value);
+        break;
+      case "country":
+        setCountry(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!firstName || !lastName || !email || !phone || !url || !address || !state || !zip || !country) {
-      setErrorMessage('All fields except Address 2 are required.');
+    if (!name || !address || !city || !state || !zip) {
+      setErrorMessage('name, address, city, state, zip are required.');
       return;
     }
 
-    setIsLoading(true); // Set isLoading to true
+    setIsLoading(true);
 
     try {
       await addDoc(collection(db, "properties"), {
@@ -102,164 +158,87 @@ const PropertyForm: React.FC = () => {
       setState('');
       setZip('');
       setCountry('');
+      setErrorMessage('');
       // Fetch the latest documents from the 'properties' collection
       const querySnapshot = await getDocs(collection(db, 'properties'));
-      const data = querySnapshot.docs.map((doc) => doc.data()) as Document[];
+      const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Document[];
       setProperties(data);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
 
-    setIsLoading(false); // Set isLoading back to false after form submission
-  };
-
-  const handleCancel = () => {
-    setName("");
-    setType("");
-    setCity("");
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPhone('');
-    setUrl('');
-    setAddress('');
-    setAddress2('');
-    setState('');
-    setZip('');
-    setCountry('');
+    setIsLoading(false);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          placeholder="Type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder="First Name"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          placeholder="Last Name"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Phone"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="URL"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Address"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={address2}
-          onChange={(e) => setAddress2(e.target.value)}
-          placeholder="Address 2"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={state}
-          onChange={(e) => setState(e.target.value)}
-          placeholder="State"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={zip}
-          onChange={(e) => setZip(e.target.value)}
-          placeholder="Zip"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
-        <input
-          type="text"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          placeholder="Country"
-          className="mb-4 p-2 border border-gray-300 text-black"
-        />
+      <div>
+        <h2>Property Manager</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            value={firstName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={handleChange}
+            required
+            pattern="\d{10}"
+          />
+          <input
+            type="text"
+            name="type"
+            placeholder="Business Type"
+            value={type}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Submitting...' : 'Submit'}
+          </button>
+        </form>
 
-        <div className="flex justify-between">
-          <button type="submit" className="p-2 bg-blue-500 text-white">
-            {isLoading ? (
-              <svg
-                className="animate-spin h-5 w-5 mr-3"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            ) : (
-              "Submit"
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="p-2 bg-red-500 text-white"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+        <h3>Properties</h3>
+        <ul>
+          {properties.map((property, index) => (
+            <li key={property.id}>
+              {property.firstName} {property.lastName} - {property.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <div className="flex space-x-4 mb-4 mt-10">
         <select
@@ -315,8 +294,8 @@ const PropertyForm: React.FC = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredProperties
-              .sort((a: any, b: any) => a.name.localeCompare(b.name))
-              .map((property: any) => (
+              .sort((a: Document, b: Document) => a.name.localeCompare(b.name))
+              .map((property: Document) => (
                 <tr key={property.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{property.name}</div>
