@@ -254,19 +254,19 @@ const PropertyManager: React.FC = () => {
                 <fieldset className="mt-4">
                   <legend className="sr-only">Notification method</legend>
                   <div className="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-                    
-                      <div className="flex items-center">
-                        <input
-                        
-                          name="notification-method"
-                          type="radio"
-                          defaultChecked={false}
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label  className="ml-3 block text-sm font-medium leading-6 text-gray-900">
-                          Active
+
+                    <div className="flex items-center">
+                      <input
+
+                        name="notification-method"
+                        type="radio"
+                        defaultChecked={false}
+                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <label className="ml-3 block text-sm font-medium leading-6 text-gray-900">
+                        Active
                       </label>
-                      
+
                     </div>
                     <div className="flex items-center">
                       <input
@@ -281,7 +281,7 @@ const PropertyManager: React.FC = () => {
                       </label>
 
                     </div>
-                    
+
                   </div>
                 </fieldset>
               </div>
@@ -410,6 +410,7 @@ const PropertyManager: React.FC = () => {
                     value={formData.city}
                     onChange={handleChange}
                     required
+                    disabled
                     className="input w-full bg-gray-100 text-gray-500 cursor-not-allowed"
                   />
                 </div>
@@ -421,6 +422,7 @@ const PropertyManager: React.FC = () => {
                     value={formData.state}
                     onChange={handleChange}
                     required
+                    disabled
                     className="input w-full bg-gray-100 text-gray-500 cursor-not-allowed"
                   />
                 </div>
@@ -542,7 +544,7 @@ const PropertyManager: React.FC = () => {
         </div>
         <div className="w-full md:w-3/5 px-2 flex items-start justify-end relative">
           <div className="bg-green-800 text-white text-sm font-semibold p-2 rounded pr-3 pl-3 absolute top-0 right-0 px-2">
-            LOCATION: {formData.city || "City" }, {formData.state || "State" }, {formData.zipCode || "Zip Code"}
+            LOCATION: {formData.city || "City"}, {formData.state || "State"}, {formData.zipCode || "Zip Code"}
           </div>
           <div className="bg-white py-24 sm:py-32">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -558,7 +560,7 @@ const PropertyManager: React.FC = () => {
                 <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-2">
 
                   <div className="flex flex-col bg-gray-400/5 p-8">
-                    <dt className="text-sm font-semibold leading-6 text-gray-600">{formData.sqFt || "2,500"}</dt>
+                    <dt className="text-sm font-semibold leading-6 text-gray-600">{formData.sqFt || "N/A"}</dt>
                     <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">Square Footage</dd>
                   </div>
                   <div className="flex flex-col bg-gray-400/5 p-8">
@@ -566,7 +568,7 @@ const PropertyManager: React.FC = () => {
                     <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">Rent Price</dd>
                   </div>
                   <div className="flex flex-col bg-gray-400/5 p-8">
-                    <dt className="text-sm font-semibold leading-6 text-gray-600">{formData.city || "City" }, {formData.state || "State" }</dt>
+                    <dt className="text-sm font-semibold leading-6 text-gray-600">{formData.city || "City"}, {formData.state || "State"}</dt>
                     <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">Area</dd>
                   </div>
                   <div className="flex flex-col bg-gray-400/5 p-8">
